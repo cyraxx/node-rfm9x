@@ -1,0 +1,37 @@
+{
+  "name": "rfm9x",
+  "version": "1.0.0",
+  "description": "Node.js module for SPI communication with RFM9x wireless modules on Raspberry Pi (e.g. Adafruit Radio Bonnet)",
+  "main": "rfm9x.js",
+  "directories": {
+    "example": "example"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cyraxx/node-rfm9x.git"
+  },
+  "engines": {
+    "node": ">=15.0.0"
+  },
+  "keywords": [
+    "lora",
+    "wireless",
+    "rfm9x",
+    "rfm95",
+    "rfm96",
+    "rfm97",
+    "rfm98",
+    "sx127x",
+    "raspberry",
+    "rpi",
+    "adafruit",
+    "iot"
+  ],
+  "author": "Andreas Reich",
+  "license": "MIT",
+  "dependencies": {
+    "onoff": "^6.0.3",
+    "spi-device": "^3.1.2",
+    "usleep": "^1.0.3"
+  }
+}
