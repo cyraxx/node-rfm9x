@@ -6,7 +6,7 @@ with [Adafruit Radio Bonnets](https://learn.adafruit.com/adafruit-radio-bonnets/
 The code has only been tested on Raspberry Pi but could technically also work
 on other boards supported by onoff and spi-device.
 
-# Acknowledgements
+## Acknowledgements
 
 - The [CircuitPython RFM9x module](https://github.com/adafruit/Adafruit_CircuitPython_RFM9x)
 was used as a template for most of the logic.
@@ -19,7 +19,11 @@ See `example/pingpong.js` for a simple example of receiving and sending data.
 
 # API
 
-The modules exports a single class `RFM9x`. The constructor requires no arguments.
+The modules exports a single class `RFM9x`.
+
+## Class `RFM9x`
+
+Class representing the LoRa module. The constructor requires no arguments.
 
 ```js
 const rfm9x = require('rfm9x');
@@ -28,7 +32,9 @@ const module = new rfm9x();
 await module.init({ ... });
 ```
 
-## Properties
+---
+
+### Properties
 
 * [`debug`](#debug) - Output SPI debug information
 
@@ -40,13 +46,15 @@ Set this property to `true` to get all SPI communication printed out to the cons
 timing! For example, it might cause switching from sending to receiving mode to be slow enough to miss
 responses from other nodes.
 
-## Methods
+---
+
+### Methods
 
 * [`init(options)`](#initoptions) - Initialize module and LoRa settings
-* [`startReceive()`](#startreceive) - Puts the LoRa module in receive mode and enables the `receive` event
-* [`stopReceive()`](#stopreceive) - Puts the LoRa module in standby mode and stops receiving packets
-* [`send(payload)`](#sendpayload) - Sends a packet via LoRa
-* [`getVersion()`](#getversion) - Gets the chip version number from the module
+* [`startReceive()`](#startreceive) - Put the LoRa module in receive mode and enable the `receive` event
+* [`stopReceive()`](#stopreceive) - Put the LoRa module in standby mode and stop receiving packets
+* [`send(payload)`](#sendpayload) - Send a packet via LoRa
+* [`getVersion()`](#getversion) - Get the chip version number from the module
 
 #### `init(options)`
 
@@ -71,21 +79,21 @@ supported), default: `23`
 - `resetPin` - Number of the GPIO pin that the RFM9x RESET line is connected to, default: `25`
 - `dio0Pin` - Number of the GPIO pin that the RFM9x DIO0 line is connected to, default: `22`
 - `dio1Pin` - *Not currently used.* Number of the GPIO pin that the RFM9x DIO1 line is connected to,
-default: `22`
+default: `23`
 - `dio2Pin` - *Not currently used.* Number of the GPIO pin that the RFM9x DIO2 line is connected to,
-default: `22`
+default: `24`
 - `spiSpeedHz` - Speed of the SPI communication in Hz, default: `100000`
 - `txTimeoutMs` - Maximum time in milliseconds to wait for a packet transmission to finish, default: `2000`
 
 #### `startReceive()`
 
-Puts the LoRa module in receive mode and enables the `receive` event.
+Put the LoRa module in receive mode and enable the `receive` event.
 
 Returns a Promise that resolves with no value.
 
 #### `stopReceive()`
 
-Puts the LoRa module in standby mode and stops receiving packets.
+Put the LoRa module in standby mode and stop receiving packets.
 
 Returns a Promise that resolves with no value.
 
@@ -93,7 +101,7 @@ Returns a Promise that resolves with no value.
 
 - `payload` - A `Buffer` of up to 255 bytes
 
-Sends a packet via LoRa.
+Send a packet via LoRa.
 
 Returns a Promise that resolves with no value after the transmission is finished.
 
@@ -103,11 +111,13 @@ completed.
 
 #### `getVersion()`
 
-Gets the chip version number from the module.
+Get the chip version number from the module.
 
 Returns a Promise that resolves with the version number (one-byte integer).
 
-## Events
+---
+
+### Events
 
 * [`receive(packet)`](#receivepacket) - Emitted when a LoRa packet has been received
 * [`receiveError()`](#receiveerror) - Emitted when an invalid LoRa packet has been received
