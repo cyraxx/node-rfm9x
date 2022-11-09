@@ -1,6 +1,6 @@
 {
   "name": "rfm9x",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node.js module for SPI communication with RFM9x wireless modules on Raspberry Pi (e.g. Adafruit Radio Bonnet)",
   "main": "rfm9x.js",
   "directories": {
