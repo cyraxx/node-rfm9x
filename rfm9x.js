@@ -193,19 +193,20 @@ module.exports = class RFM9x extends EventEmitter {
         await this.#writeBits(REGISTERS.DIO_MAPPING_1, 2, 6, DIO0_MAPPINGS.TX_DONE);
 
         const promise = new Promise((resolve, reject) => {
-            this.#dio0Gpio.watch(async (err, value) => {
-                if (value === 1) {
-                    await this.#writeByte(REGISTERS.IRQ_FLAGS, 0xFF);
-                    resolve();
-                }
-            });
-            setTimeout(
+            const rejectTimeout = setTimeout(
                 () => {
                     this.#dio0Gpio.unwatchAll();
                     reject(new Error(`Send timeout of ${this.#options.txTimeoutMs}ms expired`));
                 },
                 this.#options.txTimeoutMs
             );
+            this.#dio0Gpio.watch(async (err, value) => {
+                if (value === 1) {
+                    clearTimeout(rejectTimeout);
+                    await this.#writeByte(REGISTERS.IRQ_FLAGS, 0xFF);
+                    resolve();
+                }
+            });
         });
 
         await this.#setOperatingMode(OP_MODES.TRANSMIT);
