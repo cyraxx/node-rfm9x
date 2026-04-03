@@ -1,4 +1,5 @@
 import EventEmitter from 'node:events';
+import spi from 'spi-device';
 import {RIO} from 'rpi-io';
 import usleep from 'usleep';
 
@@ -97,7 +98,7 @@ export default class RFM9x extends EventEmitter {
             });
         });
         this.#resetGpio = new RIO(options.resetPin, 'output', {value: 1});
-        this.#dio0Gpio = new onoff.Gpio(options.dio0Pin, 'input');
+        this.#dio0Gpio = new RIO(options.dio0Pin, 'input');
 
         await this.#reset();
 

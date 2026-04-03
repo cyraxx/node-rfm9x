@@ -1,4 +1,4 @@
-const rfm9x = require('rfm9x');
+import rfm9x from '../rfm9x.js';
 
 async function main() {
     const device = new rfm9x();
@@ -12,7 +12,7 @@ async function main() {
     });
 
     // Listen to the receive event that is emitted whenever a valid LoRa packet is received.
-    device.on('receive', packet => {
+    device.on('receive', async (packet) => {
         // Print out the packet contents and metadata for clarity.
         console.dir(packet);
 

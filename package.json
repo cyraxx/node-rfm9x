@@ -31,6 +31,7 @@
   "author": "Andreas Reich",
   "license": "MIT",
   "dependencies": {
+    "rpi-io": "^2.1.0",
     "spi-device": "^3.1.2",
     "usleep": "^1.0.3"
   }
