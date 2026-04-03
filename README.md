@@ -10,8 +10,9 @@ on other boards supported by onoff and spi-device.
 
 - The [CircuitPython RFM9x module](https://github.com/adafruit/Adafruit_CircuitPython_RFM9x)
 was used as a template for most of the logic.
-- The [spi-device](https://github.com/fivdi/spi-device) and [onoff](https://github.com/fivdi/onoff)
-modules by fivdi made interfacing with the hardware really easy.
+- The [spi-device](https://github.com/fivdi/spi-device) module by fivdi and and the
+[rpi-io](https://github.com/gdorbes/rpi-io) module by gdorbes made interfacing with the hardware
+really easy.
 
 # Example
 
@@ -26,7 +27,7 @@ The modules exports a single class `RFM9x`.
 Class representing the LoRa module. The constructor requires no arguments.
 
 ```js
-const rfm9x = require('rfm9x');
+import rfm9x from 'rfm9x';
 const module = new rfm9x();
 
 await module.init({ ... });

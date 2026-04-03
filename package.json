@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "Node.js module for SPI communication with RFM9x wireless modules on Raspberry Pi (e.g. Adafruit Radio Bonnet)",
   "main": "rfm9x.js",
+  "type": "module",
   "directories": {
     "example": "example"
   },
@@ -30,7 +31,7 @@
   "author": "Andreas Reich",
   "license": "MIT",
   "dependencies": {
-    "@bratbit/onoff": "^1.0.7",
+    "rpi-io": "^2.1.0",
     "spi-device": "^3.1.2",
     "usleep": "^1.0.3"
   }

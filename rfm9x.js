@@ -1,7 +1,7 @@
-const EventEmitter = require('node:events');
-const spi = require('spi-device');
-const onoff = require('@bratbit/onoff');
-const usleep = require('usleep');
+import EventEmitter from 'node:events';
+import spi from 'spi-device';
+import {RIO} from 'rpi-io';
+import usleep from 'usleep';
 
 const defaultOptions = {
     frequencyMhz: 915,
@@ -77,7 +77,7 @@ const BITMASKS = [
     0b01111111,
 ];
 
-module.exports = class RFM9x extends EventEmitter {
+export default class RFM9x extends EventEmitter {
     debug = false;
     #options;
     #isReceiving = false;
@@ -97,9 +97,8 @@ module.exports = class RFM9x extends EventEmitter {
                 else resolve(dev);
             });
         });
-        this.#resetGpio = new onoff.Gpio(options.resetPin, 'high');
-        this.#dio0Gpio = new onoff.Gpio(options.dio0Pin, 'in');
-        this.#dio0Gpio.setEdge('rising');
+        this.#resetGpio = new RIO(options.resetPin, 'output', {value: 1});
+        this.#dio0Gpio = new RIO(options.dio0Pin, 'input');
 
         await this.#reset();
 
@@ -138,9 +137,9 @@ module.exports = class RFM9x extends EventEmitter {
     }
 
     async #reset() {
-        await this.#resetGpio.write(0);
+        this.#resetGpio.write(0);
         await usleep.usleep(100);
-        await this.#resetGpio.write(1);
+        this.#resetGpio.write(1);
         await usleep.msleep(5);
     }
 
@@ -149,8 +148,8 @@ module.exports = class RFM9x extends EventEmitter {
         await this.#writeByte(REGISTERS.FIFO_ADDR_PTR, 0);
         await this.#writeBits(REGISTERS.DIO_MAPPING_1, 2, 6, DIO0_MAPPINGS.RX_DONE);
 
-        this.#dio0Gpio.watch(async (err, value) => {
-            if (value === 1) {
+        this.#dio0Gpio.monitoringStart(async (edge) => {
+            if (edge === 'rising') {
                 const flags = await this.#readBits(REGISTERS.IRQ_FLAGS, 3, 4);
                 await this.#writeByte(REGISTERS.IRQ_FLAGS, 0xFF);
 
@@ -171,14 +170,14 @@ module.exports = class RFM9x extends EventEmitter {
                     snrDb: (snr > 127 ? (256 - snr) * -1 : snr) / 4,
                 });;
             }
-        });
+        }, 'rising');
 
         await this.#setOperatingMode(OP_MODES.RXCONT);
     }
 
     async stopReceive() {
         await this.#setOperatingMode(OP_MODES.STANDBY);
-        this.#dio0Gpio.unwatchAll();
+        this.#dio0Gpio.monitoringStop();
     }
 
     async send(payload) {
@@ -195,18 +194,18 @@ module.exports = class RFM9x extends EventEmitter {
         const promise = new Promise((resolve, reject) => {
             const rejectTimeout = setTimeout(
                 () => {
-                    this.#dio0Gpio.unwatchAll();
+                    this.#dio0Gpio.monitoringStop();
                     reject(new Error(`Send timeout of ${this.#options.txTimeoutMs}ms expired`));
                 },
                 this.#options.txTimeoutMs
             );
-            this.#dio0Gpio.watch(async (err, value) => {
-                if (value === 1) {
+            this.#dio0Gpio.monitoringStart(async (edge) => {
+                if (edge === 'rising') {
                     clearTimeout(rejectTimeout);
                     await this.#writeByte(REGISTERS.IRQ_FLAGS, 0xFF);
                     resolve();
                 }
-            });
+            }, 'rising');
         });
 
         await this.#setOperatingMode(OP_MODES.TRANSMIT);
