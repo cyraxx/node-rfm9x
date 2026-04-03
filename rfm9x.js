@@ -1,6 +1,6 @@
 const EventEmitter = require('node:events');
 const spi = require('spi-device');
-const onoff = require('onoff');
+const onoff = require('@bratbit/onoff');
 const usleep = require('usleep');
 
 const defaultOptions = {
